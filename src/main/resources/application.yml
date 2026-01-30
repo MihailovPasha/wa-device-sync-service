@@ -1,0 +1,19 @@
+server:
+  port: 8083
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: "health.raw.google"
+
+google-fit-integration:
+  base-url: "http://localhost:8082/v1/google-fit/"
+  timeout: 5000
+
+auth-service:
+  base-url: "http://localhost:8080/v1/users"
+
+logging:
+  charset:
+    console: UTF-8
