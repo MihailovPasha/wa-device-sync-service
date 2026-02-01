@@ -8,11 +8,11 @@ spring:
       default-topic: "health.raw.google"
 
 google-fit-integration:
-  base-url: "http://localhost:8082/v1/google-fit/"
+  base-url: "http://localhost:8082/v1/google-fit/sync"
   timeout: 5000
 
 auth-service:
-  base-url: "http://localhost:8080/v1/users"
+  base-url: "http://localhost:8080/v1/sync"
 
 logging:
   charset:

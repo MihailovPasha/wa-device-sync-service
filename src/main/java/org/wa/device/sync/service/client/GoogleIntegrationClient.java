@@ -45,7 +45,7 @@ public class GoogleIntegrationClient {
         return getAuthUser(email)
                 .flatMap(refreshToken ->
                         fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC),
-                                "активности", "activity",
+                                "активности", "/activity",
                                 ActivityDataResponse.class, activityDataMapper::toHealthRawData)
                 );
     }
@@ -54,7 +54,7 @@ public class GoogleIntegrationClient {
         return getAuthUser(email)
                 .flatMap(refreshToken ->
                         fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC),
-                                "сердцебиения", "heart-rate",
+                                "сердцебиения", "/heart-rate",
                                 HeartRateDataResponse.class, heartRateDataMapper::toHealthRawData)
                 );
     }
@@ -63,7 +63,7 @@ public class GoogleIntegrationClient {
         return getAuthUser(email)
                 .flatMap(refreshToken ->
                         fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC),
-                                "сна", "sleep",
+                                "сна", "/sleep",
                                 SleepDataResponse.class, sleepDataMapper::toHealthRawData)
                 );
     }
