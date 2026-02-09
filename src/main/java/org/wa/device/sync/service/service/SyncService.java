@@ -11,6 +11,4 @@ public interface SyncService {
     Mono<Void> syncSleepData(String email);
 
     Mono<Void> syncHeartRateData(String email);
-
-    Mono<Void> performDailyFullSync();
 }

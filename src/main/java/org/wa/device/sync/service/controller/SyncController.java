@@ -9,7 +9,7 @@ import org.wa.device.sync.service.service.SyncService;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/v1/sync")
+@RequestMapping("/internal/v1/sync")
 @RequiredArgsConstructor
 public class SyncController {
 

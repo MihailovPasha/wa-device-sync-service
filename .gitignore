@@ -35,3 +35,4 @@ build/
 /.gitattributes
 /mvnw
 /mvnw.cmd
+/.env
