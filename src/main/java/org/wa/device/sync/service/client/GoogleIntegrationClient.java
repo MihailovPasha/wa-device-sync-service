@@ -2,6 +2,7 @@ package org.wa.device.sync.service.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,6 +32,12 @@ public class GoogleIntegrationClient {
     private final HeartRateDataMapper heartRateDataMapper;
     private final SleepDataMapper sleepDataMapper;
     private final FullDataMapper fullDataMapper;
+    @Value("${google-fit-integration.endpoint.activity}")
+    private String activityPath;
+    @Value("${google-fit-integration.endpoint.heart-rate}")
+    private String heartRatePath;
+    @Value("${google-fit-integration.endpoint.sleep}")
+    private String sleepPath;
 
     public GoogleIntegrationClient(ActivityDataMapper activityDataMapper,
                                    HeartRateDataMapper heartRateDataMapper,
@@ -46,19 +53,19 @@ public class GoogleIntegrationClient {
 
     public Mono<HealthRawData> fetchActivityData(String email) {
         return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
-                DataTypeEnum.ACTIVITY.getDescription(), "/activity",
+                DataTypeEnum.ACTIVITY.getDescription(), activityPath,
                 ActivityDataResponse.class, activityDataMapper::toHealthRawData);
     }
 
     public Mono<HealthRawData> fetchHeartRateData(String email) {
         return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
-                DataTypeEnum.HEART_RATE.getDescription(), "/heart-rate",
+                DataTypeEnum.HEART_RATE.getDescription(), heartRatePath,
                 HeartRateDataResponse.class, heartRateDataMapper::toHealthRawData);
     }
 
     public Mono<HealthRawData> fetchSleepData(String email) {
         return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
-                DataTypeEnum.SLEEP.getDescription(), "/sleep",
+                DataTypeEnum.SLEEP.getDescription(), sleepPath,
                 SleepDataResponse.class, sleepDataMapper::toHealthRawData);
     }
 

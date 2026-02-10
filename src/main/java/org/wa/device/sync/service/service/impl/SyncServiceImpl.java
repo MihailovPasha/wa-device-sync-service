@@ -53,7 +53,7 @@ public class SyncServiceImpl implements SyncService {
                 () -> googleIntegrationClient.fetchHeartRateData(email));
     }
 
-    @Scheduled(cron = "* * 2 * * ?")
+    @Scheduled(cron = "${scheduling.sync.daily-full-sync.cron}")
     @SchedulerLock(
             name = "dailyFullSync",
             lockAtLeastFor = "5m",

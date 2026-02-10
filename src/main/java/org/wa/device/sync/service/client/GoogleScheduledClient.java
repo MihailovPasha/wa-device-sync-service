@@ -2,6 +2,7 @@ package org.wa.device.sync.service.client;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,6 +31,12 @@ public class GoogleScheduledClient {
     private final HeartRateDataMapper heartRateDataMapper;
     private final SleepDataMapper sleepDataMapper;
     private final FullDataMapper fullDataMapper;
+    @Value("${google-fit-integration.endpoint.activity}")
+    private String activityPath;
+    @Value("${google-fit-integration.endpoint.heart-rate}")
+    private String heartRatePath;
+    @Value("${google-fit-integration.endpoint.sleep}")
+    private String sleepPath;
 
     public GoogleScheduledClient(ActivityDataMapper activityDataMapper,
                                  HeartRateDataMapper heartRateDataMapper,
@@ -66,17 +73,17 @@ public class GoogleScheduledClient {
     }
 
     private Mono<HealthRawData> fetchActivityData(String email, String refreshToken) {
-        return fetchData(email, refreshToken, DataTypeEnum.ACTIVITY.getDescription(), "/activity",
+        return fetchData(email, refreshToken, DataTypeEnum.ACTIVITY.getDescription(), activityPath,
                 ActivityDataResponse.class, activityDataMapper::toHealthRawData);
     }
 
     private Mono<HealthRawData> fetchHeartRateData(String email, String refreshToken) {
-        return fetchData(email, refreshToken, DataTypeEnum.HEART_RATE.getDescription(), "/heart-rate",
+        return fetchData(email, refreshToken, DataTypeEnum.HEART_RATE.getDescription(), heartRatePath,
                 HeartRateDataResponse.class, heartRateDataMapper::toHealthRawData);
     }
 
     private Mono<HealthRawData> fetchSleepData(String email, String refreshToken) {
-        return fetchData(email, refreshToken, DataTypeEnum.SLEEP.getDescription(), "/sleep",
+        return fetchData(email, refreshToken, DataTypeEnum.SLEEP.getDescription(), sleepPath,
                 SleepDataResponse.class, sleepDataMapper::toHealthRawData);
     }
 

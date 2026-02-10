@@ -25,14 +25,14 @@ public class WebClientConfig {
     @Value("${google-fit-integration.timeout}")
     private int timeout;
 
-    @Bean("googleIntegrationWebClient")
+    @Bean
     public WebClient googleIntegrationWebClient() {
         log.info("Создание WebClient для Google Fit Integration Service: {}", googleBaseUrl);
 
         return getWebClient(googleBaseUrl);
     }
 
-    @Bean("authServiceWebClient")
+    @Bean
     public WebClient authServiceWebClient() {
         log.info("Создание WebClient для Auth Service: {}", authServiceBaseUrl);
 
