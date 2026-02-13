@@ -1,0 +1,32 @@
+server:
+  port: 8083
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    template:
+      default-topic: health.raw.google
+
+google-fit-integration:
+  base-url: ${GOOGLE_FIT_INTEGRATION_BASE_URL:http://localhost:8082/v1/internal/google-fit/sync}
+  endpoint:
+    activity: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_ACTIVITY:/activity}
+    heart-rate: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_HEART_RATE:/heart-rate}
+    sleep: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_SLEEP:/sleep}
+  timeout: 5000
+
+auth-service:
+  base-url: ${AUTH_SERVICE_BASE_URL:http://localhost:8080/v1/internal/sync}
+
+scheduling:
+  sync:
+    daily-full-sync:
+      cron: ${DAILY_FULL_SYNC_CRON:* * 2 * * ?}
+
+jwt:
+  secret:
+    access: ${JWT_SECRET_ACCESS:Y5ncOVqSI/HnJisBxE0TDsk/3cMP/FbwMDL+elybXkqsmpjNIqbjwCCOM8wTznVkqxeYZqf+ppsr4wzHNt8peA==}
+
+logging:
+  charset:
+    console: UTF-8
