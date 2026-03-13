@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 @Data
 @Builder
 public class HealthRawData {
-    private String userId;
+    private String externalId;
     private String source;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssX", timezone = "UTC")
