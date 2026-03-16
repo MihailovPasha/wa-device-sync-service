@@ -10,7 +10,7 @@ public interface SleepDataMapper {
 
     String DEFAULT_SOURCE = "google";
 
-    @Mapping(target = "userId", source = "email")
+    @Mapping(target = "externalId", source = "email")
     @Mapping(target = "timestamp", source = "date")
     @Mapping(target = "sleepHours", source = "totalSleepHours")
     @Mapping(target = "heartRate", ignore = true)

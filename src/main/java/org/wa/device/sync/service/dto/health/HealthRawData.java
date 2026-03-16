@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
 public class HealthRawData {
-    private String userId;
+    private UUID externalId;
     private String source;
     
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssX", timezone = "UTC")

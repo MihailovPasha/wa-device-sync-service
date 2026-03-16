@@ -7,7 +7,7 @@ import org.wa.device.sync.service.dto.health.HealthRawData;
 @Mapper(componentModel = "spring")
 public interface FullDataMapper {
 
-    @Mapping(target = "userId", source = "activityData.userId")
+    @Mapping(target = "externalId", source = "activityData.externalId")
     @Mapping(target = "source", source = "activityData.source")
     @Mapping(target = "timestamp", source = "activityData.timestamp")
     @Mapping(target = "steps", source = "activityData.steps")
