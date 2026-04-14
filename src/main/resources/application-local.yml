@@ -6,6 +6,11 @@ spring:
     bootstrap-servers: localhost:9092
     template:
       default-topic: health.raw.google
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      connect-timeout: ${REDIS_TIMEOUT}
 
 google-fit-integration:
   base-url: ${GOOGLE_FIT_INTEGRATION_BASE_URL:http://localhost:8082/v1/internal/google-fit/sync}

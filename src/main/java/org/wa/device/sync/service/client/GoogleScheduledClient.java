@@ -20,6 +20,7 @@ import org.wa.device.sync.service.mapper.SleepDataMapper;
 import reactor.core.publisher.Mono;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -51,6 +52,7 @@ public class GoogleScheduledClient {
     }
 
     public Mono<HealthRawData> fetchFullHealthData(UserDto user) {
+        UUID externalId = user.getId();
         String email = user.getEmail();
         String refreshToken = user.getGoogleRefreshToken();
 
@@ -62,9 +64,9 @@ public class GoogleScheduledClient {
         log.info("Получение данных здоровья {}", email);
 
         return Mono.zip(
-                fetchActivityData(email, refreshToken),
-                fetchHeartRateData(email, refreshToken),
-                fetchSleepData(email, refreshToken)
+                fetchActivityData(email, refreshToken, externalId),
+                fetchHeartRateData(email, refreshToken, externalId),
+                fetchSleepData(email, refreshToken, externalId)
         ).map(tuple -> fullDataMapper.combine(
                 tuple.getT1(),
                 tuple.getT2(),
@@ -72,19 +74,22 @@ public class GoogleScheduledClient {
         ));
     }
 
-    private Mono<HealthRawData> fetchActivityData(String email, String refreshToken) {
+    private Mono<HealthRawData> fetchActivityData(String email, String refreshToken, UUID externalId) {
         return fetchData(email, refreshToken, DataTypeEnum.ACTIVITY.getDescription(), activityPath,
-                ActivityDataResponse.class, activityDataMapper::toHealthRawData);
+                ActivityDataResponse.class,
+                response -> activityDataMapper.toHealthRawData(response, externalId));
     }
 
-    private Mono<HealthRawData> fetchHeartRateData(String email, String refreshToken) {
+    private Mono<HealthRawData> fetchHeartRateData(String email, String refreshToken, UUID externalId) {
         return fetchData(email, refreshToken, DataTypeEnum.HEART_RATE.getDescription(), heartRatePath,
-                HeartRateDataResponse.class, heartRateDataMapper::toHealthRawData);
+                HeartRateDataResponse.class,
+                response -> heartRateDataMapper.toHealthRawData(response, externalId));
     }
 
-    private Mono<HealthRawData> fetchSleepData(String email, String refreshToken) {
+    private Mono<HealthRawData> fetchSleepData(String email, String refreshToken, UUID externalId) {
         return fetchData(email, refreshToken, DataTypeEnum.SLEEP.getDescription(), sleepPath,
-                SleepDataResponse.class, sleepDataMapper::toHealthRawData);
+                SleepDataResponse.class,
+                response -> sleepDataMapper.toHealthRawData(response, externalId));
     }
 
     private <T> Mono<HealthRawData> fetchData(String email, String refreshToken,
@@ -95,7 +100,7 @@ public class GoogleScheduledClient {
                 .uri(uriBuilder -> uriBuilder.path(path)
                         .queryParam("email", email)
                         .queryParam("refreshToken", refreshToken)
-                        .queryParam("date", OffsetDateTime.now(ZoneOffset.UTC))
+                        .queryParam("date", OffsetDateTime.now(ZoneOffset.UTC).minusDays(1))
                         .build())
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, clientResponse ->
