@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  device-sync-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: device-sync-service
+    ports:
+      - "8083:8083"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS:-wa-kafka:9092}
+      JWT_SECRET_ACCESS: ${JWT_SECRET_ACCESS:-Y5ncOVqSI/HnJisBxE0TDsk/3cMP/FbwMDL+elybXkqsmpjNIqbjwCCOM8wTznVkqxeYZqf+ppsr4wzHNt8peA==}
+      GOOGLE_FIT_INTEGRATION_BASE_URL: ${GOOGLE_FIT_INTEGRATION_BASE_URL:-http://google-fit-service:8082/v1/internal/google-fit/sync}
+      GOOGLE_FIT_INTEGRATION_ENDPOINTS_ACTIVITY: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_ACTIVITY:-/activity}
+      GOOGLE_FIT_INTEGRATION_ENDPOINTS_HEART_RATE: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_HEART_RATE:-/heart-rate}
+      GOOGLE_FIT_INTEGRATION_ENDPOINTS_SLEEP: ${GOOGLE_FIT_INTEGRATION_ENDPOINTS_SLEEP:-/sleep}
+      GOOGLE_FIT_INTEGRATION_TIMEOUT: ${GOOGLE_FIT_INTEGRATION_TIMEOUT:-5000}
+      AUTH_SERVICE_BASE_URL: ${AUTH_SERVICE_BASE_URL:-http://auth-service-local:8080/v1/internal/sync}
+      SCHEDULING_SYNC_DAILY_FULL_SYNC_CRON: ${DAILY_FULL_SYNC_CRON:-* * 2 * * ?}
+      REDIS_HOST: ${REDIS_HOST:-wa-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_TIMEOUT: ${REDIS_TIMEOUT:-5s}
+      ENCRYPT_SECRET: ${ENCRYPT_SECRET:-i1Gzkvgov/+JojXyEEIoB8+/204Ow/22EWSQfuAaEwo=}
+      CIPHER_ALGORITHM: ${CIPHER_ALGORITHM:-AES/GCM/NoPadding}
+      SECRET_KEY_ALGORITHM: ${SECRET_KEY_ALGORITHM:-AES}
+    networks:
+      - wa-local-network
+    restart: unless-stopped
+
+networks:
+  wa-local-network:
+    external: true

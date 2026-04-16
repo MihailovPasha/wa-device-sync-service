@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.wa.auth.lib.util.AuthContextHolder;
 import org.wa.device.sync.service.client.AuthServiceClient;
 import org.wa.device.sync.service.client.GoogleIntegrationClient;
 import org.wa.device.sync.service.client.GoogleScheduledClient;
@@ -15,6 +16,7 @@ import org.wa.device.sync.service.dto.enumeration.DataTypeEnum;
 import org.wa.device.sync.service.dto.health.HealthRawData;
 import org.wa.device.sync.service.service.SyncService;
 import reactor.core.publisher.Mono;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 @Service
@@ -30,27 +32,43 @@ public class SyncServiceImpl implements SyncService {
     private final KafkaTemplate<String, HealthRawData> kafkaTemplate;
 
     @Override
-    public Mono<Void> syncFullData(String email) {
+    public Mono<Void> syncFullData() {
+        String email = AuthContextHolder.getEmail();
+        String refreshToken = AuthContextHolder.getGoogleRefreshToken();
+        UUID externalId = AuthContextHolder.getId();
+
         return sendData(email, DataTypeEnum.FULL_HEALTH.getDescription(),
-                () -> googleIntegrationClient.fetchFullHealthData(email));
+                () -> googleIntegrationClient.fetchFullHealthData(email, refreshToken, externalId));
     }
 
     @Override
-    public Mono<Void> syncActivityData(String email) {
+    public Mono<Void> syncActivityData() {
+        String email = AuthContextHolder.getEmail();
+        String refreshToken = AuthContextHolder.getGoogleRefreshToken();
+        UUID externalId = AuthContextHolder.getId();
+
         return sendData(email, DataTypeEnum.ACTIVITY.getDescription(),
-                () -> googleIntegrationClient.fetchActivityData(email));
+                () -> googleIntegrationClient.fetchActivityData(email, refreshToken, externalId));
     }
 
     @Override
-    public Mono<Void> syncSleepData(String email) {
+    public Mono<Void> syncSleepData() {
+        String email = AuthContextHolder.getEmail();
+        String refreshToken = AuthContextHolder.getGoogleRefreshToken();
+        UUID externalId = AuthContextHolder.getId();
+
         return sendData(email, DataTypeEnum.SLEEP.getDescription(),
-                () -> googleIntegrationClient.fetchSleepData(email));
+                () -> googleIntegrationClient.fetchSleepData(email, refreshToken, externalId));
     }
 
     @Override
-    public Mono<Void> syncHeartRateData(String email) {
+    public Mono<Void> syncHeartRateData() {
+        String email = AuthContextHolder.getEmail();
+        String refreshToken = AuthContextHolder.getGoogleRefreshToken();
+        UUID externalId = AuthContextHolder.getId();
+
         return sendData(email, DataTypeEnum.HEART_RATE.getDescription(),
-                () -> googleIntegrationClient.fetchHeartRateData(email));
+                () -> googleIntegrationClient.fetchHeartRateData(email, refreshToken, externalId));
     }
 
     @Scheduled(cron = "${scheduling.sync.daily-full-sync.cron}")

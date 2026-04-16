@@ -21,6 +21,7 @@ import org.wa.device.sync.service.mapper.SleepDataMapper;
 import reactor.core.publisher.Mono;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -51,30 +52,33 @@ public class GoogleIntegrationClient {
         this.webClient = webClient;
     }
 
-    public Mono<HealthRawData> fetchActivityData(String email) {
-        return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
+    public Mono<HealthRawData> fetchActivityData(String email, String refreshToken, UUID externalId) {
+        return fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC).minusDays(1),
                 DataTypeEnum.ACTIVITY.getDescription(), activityPath,
-                ActivityDataResponse.class, activityDataMapper::toHealthRawData);
+                ActivityDataResponse.class,
+                response -> activityDataMapper.toHealthRawData(response, externalId));
     }
 
-    public Mono<HealthRawData> fetchHeartRateData(String email) {
-        return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
+    public Mono<HealthRawData> fetchHeartRateData(String email, String refreshToken, UUID externalId) {
+        return fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC).minusDays(1),
                 DataTypeEnum.HEART_RATE.getDescription(), heartRatePath,
-                HeartRateDataResponse.class, heartRateDataMapper::toHealthRawData);
+                HeartRateDataResponse.class,
+                response -> heartRateDataMapper.toHealthRawData(response, externalId));
     }
 
-    public Mono<HealthRawData> fetchSleepData(String email) {
-        return fetchData(email, AuthContextHolder.getGoogleRefreshToken(), OffsetDateTime.now(ZoneOffset.UTC),
+    public Mono<HealthRawData> fetchSleepData(String email, String refreshToken, UUID externalId) {
+        return fetchData(email, refreshToken, OffsetDateTime.now(ZoneOffset.UTC).minusDays(1),
                 DataTypeEnum.SLEEP.getDescription(), sleepPath,
-                SleepDataResponse.class, sleepDataMapper::toHealthRawData);
+                SleepDataResponse.class,
+                response -> sleepDataMapper.toHealthRawData(response, externalId));
     }
 
-    public Mono<HealthRawData> fetchFullHealthData(String email) {
+    public Mono<HealthRawData> fetchFullHealthData(String email, String refreshToken, UUID externalId) {
         log.info("Получение данных здоровья...");
         return Mono.zip(
-                fetchActivityData(email),
-                fetchHeartRateData(email),
-                fetchSleepData(email)
+                fetchActivityData(email,refreshToken, externalId),
+                fetchHeartRateData(email, refreshToken, externalId),
+                fetchSleepData(email, refreshToken, externalId)
         ).map(tuple -> fullDataMapper.combine(
                 tuple.getT1(),
                 tuple.getT2(),

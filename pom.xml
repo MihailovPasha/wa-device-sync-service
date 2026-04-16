@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.github.vladdossik</groupId>
             <artifactId>wa-auth-lib</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
+            <version>v0.0.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
