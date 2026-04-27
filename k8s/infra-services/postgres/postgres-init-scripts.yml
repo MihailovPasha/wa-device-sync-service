@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: lissa-fit
+data:
+  01-create-schemas.sql: |
+    CREATE SCHEMA IF NOT EXISTS wa_auth_service_db;
+    CREATE SCHEMA IF NOT EXISTS wa_user_service_db;
+    CREATE SCHEMA IF NOT EXISTS wa_report_service_db;
+    GRANT ALL ON SCHEMA wa_auth_service_db TO postgres;
+    GRANT ALL ON SCHEMA wa_user_service_db TO postgres;
+    GRANT ALL ON SCHEMA wa_report_service_db TO postgres;

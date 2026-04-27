@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: timescaledb-init-scripts
+  namespace: lissa-fit
+data:
+  01-create-extension.sql: |
+    CREATE EXTENSION IF NOT EXISTS timescaledb SCHEMA public;
+  02-create-schema.sql: |
+    CREATE SCHEMA IF NOT EXISTS wa_storage_service_db;
+    GRANT ALL ON SCHEMA wa_storage_service_db TO postgres;
