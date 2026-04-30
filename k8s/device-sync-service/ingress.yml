@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: device-sync-service-ingress
+  namespace: lissa-fit
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: lissa-fit.device-sync.com
+      http:
+        paths:
+          - path: /v1/internal/sync(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: device-sync-service
+                port:
+                  number: 80

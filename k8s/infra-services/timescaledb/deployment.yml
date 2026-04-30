@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wa-timescaledb
+  namespace: lissa-fit
+  labels:
+    app: wa-timescaledb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wa-timescaledb
+  template:
+    metadata:
+      labels:
+        app: wa-timescaledb
+    spec:
+      containers:
+        - name: timescaledb
+          image: timescale/timescaledb:latest-pg16
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: "wa_storage_service"
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: timescaledb-data
+              mountPath: /var/lib/postgresql/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      volumes:
+        - name: timescaledb-data
+          persistentVolumeClaim:
+            claimName: timescaledb-pvc
+        - name: init-scripts
+          configMap:
+            name: timescaledb-init-scripts

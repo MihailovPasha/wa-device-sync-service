@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: device-sync-service-config
+  namespace: lissa-fit
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "wa-kafka:9092"
+  REDIS_HOST: "wa-redis"
+  REDIS_PORT: "6379"
+  REDIS_TIMEOUT: "5s"
+  GOOGLE_FIT_INTEGRATION_BASE_URL: "http://lissa-fit.google-fit.com/v1/internal/google-fit/sync"
+  GOOGLE_FIT_INTEGRATION_ENDPOINTS_ACTIVITY: "/activity"
+  GOOGLE_FIT_INTEGRATION_ENDPOINTS_HEART_RATE: "/heart-rate"
+  GOOGLE_FIT_INTEGRATION_ENDPOINTS_SLEEP: "/sleep"
+  GOOGLE_FIT_INTEGRATION_TIMEOUT: "5000"
+  AUTH_SERVICE_BASE_URL: "http://lissa-fit.auth-service.com/v1/internal/sync"
+  CIPHER_ALGORITHM: "AES/GCM/NoPadding"
+  SECRET_KEY_ALGORITHM: "AES"
+  DAILY_FULL_SYNC_CRON: "* * 2 * * ?"
+  SPRING_KAFKA_PROPERTIES_SPRING_JSON_USE_TYPE_HEADERS: "false"

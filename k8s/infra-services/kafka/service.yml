@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wa-kafka
+  namespace: lissa-fit
+  labels:
+    app: wa-kafka
+spec:
+  type: ClusterIP
+  selector:
+    app: wa-kafka
+  ports:
+    - port: 9092
+      targetPort: 9092
+      name: plaintext
